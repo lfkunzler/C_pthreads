@@ -56,7 +56,7 @@ void mtx_init_recursive(pthread_mutex_t *mtx)
     pthread_mutexattr_t mtx_attr;
 
     pthread_mutexattr_init(&mtx_attr);
-    pthread_mutexattr_settype(&mtx_attr, PTHREAD_MUTEX_RECURSIVE_NP);
+    pthread_mutexattr_settype(&mtx_attr, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(mtx, &mtx_attr);
     pthread_mutexattr_destroy(&mtx_attr);
 }
