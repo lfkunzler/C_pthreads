@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    ex03();
+    ex04();
 
     return 0;
 }
