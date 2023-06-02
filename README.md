@@ -17,3 +17,6 @@ Prod line simulator with 3 stages
 - 3rd stage: 5 threads consuming B and generating C
 
 Instructions: Keep 3 counters, c_A, c_B and c_C
+
+## PRJ1
+This project meant to put in practice the concept of monitors.

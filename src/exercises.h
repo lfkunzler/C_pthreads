@@ -1,4 +1,5 @@
 #ifndef __INC_EXERCISES
+#define __INC_EXERCISES
 
 int ex02(void);
 void ex03(void);
