@@ -19,4 +19,8 @@ Prod line simulator with 3 stages
 Instructions: Keep 3 counters, c_A, c_B and c_C
 
 ## PRJ1
-This project meant to put in practice the concept of monitors.
+This project meant to put in practice the concept of monitors solving the problem of the philosophers dinner.
+
+## EX 07:
+This exercise meant to study the issue of the readers and writers.
+I also did a quick review on basic operations with linked lists.
