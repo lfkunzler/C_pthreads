@@ -20,6 +20,7 @@ typedef struct {
 
 #define READERS_NUM     15
 #define NUM_MAX         1024
+#define NUM_REGISTERS   1000
 
 static pthread_t th_writer;
 static pthread_t th_readers[READERS_NUM];
@@ -72,7 +73,7 @@ int llist_insert(llist_t* const list, const int idx, const char* name)
 
     if (list->size == 0) {
         list->head = list->tail = new;
-        list->size++;
+        list->size = 1;
         return 0;
     }
 
@@ -115,6 +116,9 @@ int llist_insert_ord(llist_t* const list, int idx, const char* name)
     assert(list);
     node_t *curr, *prev;
 
+    if (NULL == list->head || list->head->idx > idx) { // must insert in the beginning of the list
+        return llist_insert(list, idx, name);
+    }
     node_t *new = (node_t*)malloc(sizeof(node_t));
     if (NULL == new) {
         fprintf(stderr, "error alocating new node on llist_insert_ord()\n");
@@ -124,14 +128,6 @@ int llist_insert_ord(llist_t* const list, int idx, const char* name)
     new->idx = idx;
     new->name = name;
     
-    if (NULL == list->head || list->head->idx > idx) { // must insert in the beginning of the list
-        if (NULL == list->tail) list->tail = new; // special case, to handle the 1st insertion
-        new->next = list->head;
-        list->head = new;
-        list->size = 1;
-        return 0;
-    }
-
     curr = list->head;
     prev = curr;
 
@@ -139,9 +135,7 @@ int llist_insert_ord(llist_t* const list, int idx, const char* name)
         prev = curr;
         curr = curr->next;
     }
-
     prev->next = new;
-    new->idx = idx;
     new->next = curr;
 
     if (curr == NULL) { // reached the end of the list
@@ -184,6 +178,20 @@ int llist_print(const llist_t* const list)
     return 0;
 }
 
+int llist_free(llist_t* list)
+{
+    assert(list);
+    llist_print(list);
+
+    while (NULL != list->head) {
+        node_t *aux = list->head;
+        list->head = list->head->next;
+        free((void*)aux->name);
+        free((void*)aux);
+    }
+    return 0;
+}
+
 static unsigned int scaled_dict_pos(const int idx)
 {
     const unsigned int max_pos = sizeof(dict)/sizeof(char*);
@@ -210,7 +218,7 @@ static void *reader_task(void* args)
 {
     llist_t* list = (llist_t*)args;
 
-    for (unsigned int i=0; i<100; i++) {
+    for (unsigned int i=0; i<NUM_REGISTERS; i++) {
         unsigned int r = rand() % NUM_MAX;
 
         const char *name = monitor_read(list, r);
@@ -221,6 +229,7 @@ static void *reader_task(void* args)
         }
     }
 
+    printf("end of reader task\n");
     return NULL;
 }
 
@@ -240,7 +249,7 @@ static void* writer_task(void* args)
 {
     llist_t* list = (llist_t*)args;
 
-    for (unsigned int i=0; i<100; i++) {
+    for (unsigned int i=0; i<NUM_REGISTERS; i++) {
         unsigned int r = rand()%NUM_MAX;
         unsigned int p = scaled_dict_pos(r);
         const char* name = NULL;
@@ -251,6 +260,7 @@ static void* writer_task(void* args)
         monitor_write(list, r, name);
         printf("inserted %d with name %s\n", r, name);
     }
+    printf("end of writer task\n");
     return NULL;
 }
 
@@ -270,5 +280,7 @@ int ex07(void)
         pthread_join(th_readers[i], NULL);
     }
  
+    llist_free(&list);
+
     return 0;
 }
