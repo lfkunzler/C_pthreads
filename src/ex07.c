@@ -116,7 +116,7 @@ int llist_insert_ord(llist_t* const list, int idx, const char* name)
     assert(list);
     node_t *curr, *prev;
 
-    if (NULL == list->head || list->head->idx > idx) { // must insert in the beginning of the list
+    if (NULL == list->head || list->head->idx >= idx) { // must insert in the beginning of the list
         return llist_insert(list, idx, name);
     }
     node_t *new = (node_t*)malloc(sizeof(node_t));
