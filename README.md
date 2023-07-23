@@ -24,3 +24,31 @@ This project meant to put in practice the concept of monitors solving the proble
 ## EX 07:
 This exercise meant to study the issue of the readers and writers.
 I also did a quick review on basic operations with linked lists.
+
+## Notes about callbacks
+```
+#include <stdio.h>
+
+int sum(int a, int b)
+{
+    return a+b;
+}
+
+int sub(int a, int b)
+{
+    return a-b;
+}
+
+int calc(int (*f)(int, int), int a, int b)
+{
+    return f(a, b);
+}
+
+int main(void)
+{
+    printf("sum 15 + 16 == %d\n", calc(sum, 15, 16));
+    printf("sub 15 - 16 == %d\n", calc(sub, 15, 16));
+
+    return 0;
+}
+```
