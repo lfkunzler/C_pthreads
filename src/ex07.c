@@ -24,7 +24,7 @@ typedef struct {
 
 static pthread_t th_writer;
 static pthread_t th_readers[READERS_NUM];
-static pthread_mutex_t mtx_llist = PTHREAD_MUTEX_INITIALIZER; // it will cause low performance issues 
+static pthread_rwlock_t rwmtx_llist = PTHREAD_RWLOCK_INITIALIZER;
 
 static const char* const dict[] = {
     "amor", "lux", "ventus", "terra", "aqua", "ignis", "sol", "luna",
@@ -201,17 +201,17 @@ static unsigned int scaled_dict_pos(const int idx)
 static const char* monitor_read(const llist_t* const list, const int idx)
 {
     const char* name = NULL;
-    pthread_mutex_lock(&mtx_llist);
+    pthread_rwlock_rdlock(&rwmtx_llist);
     name = llist_get_name(list, idx);
-    pthread_mutex_unlock(&mtx_llist);
+    pthread_rwlock_unlock(&rwmtx_llist);
     return name;
 }
 
 static void monitor_write(llist_t* list, const int idx, const char* name)
 {
-    pthread_mutex_lock(&mtx_llist);
+    pthread_rwlock_wrlock(&rwmtx_llist);
     llist_insert_ord(list, idx, name);
-    pthread_mutex_unlock(&mtx_llist);
+    pthread_rwlock_unlock(&rwmtx_llist);
 }
 
 static void *reader_task(void* args)
