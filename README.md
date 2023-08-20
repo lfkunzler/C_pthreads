@@ -52,3 +52,6 @@ int main(void)
     return 0;
 }
 ```
+
+## EX 08
+Playing with signal()

@@ -7,5 +7,6 @@ void ex04(void);
 void ex05(void);
 void ex06(void);
 void ex07(void);
+void ex08(void);
 
 #endif /* !__INC_EXERCISES */
